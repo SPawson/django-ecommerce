@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-#imports env var file
-import env
+#imports env var file, comment out before commiting to production
+#import env
 #Allows us to connect to a database via a url
 import dj_database_url
 
@@ -88,16 +88,20 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+# 
 
-DATABASES = {
+if "DATABASE_URL" in os.environ:
+    DATABASES = {
     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-}
+    }      
+else:
+    print("Database not found, using local SQLLite instead")
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+ }
 
 
 
